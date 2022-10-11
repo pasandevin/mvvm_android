@@ -8,16 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import com.pasandevin.android.mvvm_android.R
+import com.pasandevin.android.mvvm_android.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
-    private var score = 0
 
     companion object {
         fun newInstance() = MainFragment()
     }
 
     private lateinit var viewModel: MainViewModel
+    private lateinit var binding: FragmentMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,23 +29,22 @@ class MainFragment : Fragment() {
 
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        val view = inflater.inflate(R.layout.fragment_main, container, false)
+        binding = FragmentMainBinding.inflate(inflater,container,false)
 
+        binding.vm = viewModel
 
-        val button = view.findViewById<Button>(R.id.countButton)
-        val textView = view.findViewById<TextView>(R.id.message)
-
-        button.setOnClickListener {
-            score++
-            textView.text = score.toString()
+        viewModel.score.observe(viewLifecycleOwner) {
+            binding.message.text = it.toString()
         }
 
-        return view
+        return binding.root
     }
+
 
 }
